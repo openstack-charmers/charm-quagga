@@ -37,8 +37,6 @@ def start_quagga():
     asn = bgpserver.generate_asn()
     quagga.vtysh(
         ['conf t',
-         'interface ens6',
-         'exit',
          'router bgp {}'.format(asn),
          'bgp router-id {}'.format(
              ch_core.hookenv.unit_get('private-address')
