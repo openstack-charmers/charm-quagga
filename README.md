@@ -23,6 +23,10 @@ environment in no time.
                   rack0        rack1        rack2
 
 # Usage
+__NOTE__: The bgp interface is currently not in the directory and you must download it manually from
+          [here](https://github.com/fnordahl/interface-bgp). Instructions for building charm with local
+          artifacts can be found in the [Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer).
+
 Set up MAAS and create the required fabrics, spaces and subnets.
 
 Example spaces:
