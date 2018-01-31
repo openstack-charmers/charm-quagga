@@ -27,6 +27,28 @@ __NOTE__: The bgp interface is currently not in the directory and you must downl
           [here](https://github.com/fnordahl/interface-bgp). Instructions for building charm with local
           artifacts can be found in the [Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer).
 
+
+## Build
+This is a layered charm and it must be built before it can be deployed.
+
+Example build instructions:
+
+    export JUJU_REPOSITORY=`pwd`
+    export LAYER_PATH=$JUJU_REPOSITORY/layers
+    export INTERFACE_PATH=$JUJU_REPOSITORY/interfaces
+    mkdir -p $LAYER_PATH $INTERFACE_PATH
+    
+    git clone https://github.com/fnordahl/interface-bgp $INTERFACE_PATH/bgp
+    git clone https://github.com/fnordahl/charm-quagga quagga
+    
+    cd quagga
+    sudo snap install charm
+    charm build
+
+You will now find a deployable charm in ../builds/quagga
+
+
+## Simple Usage
 To just get a BGP router to play and speak with you can deploy the charm to a LXD container on your
 laptop using the localhost provider.
 
@@ -48,6 +70,8 @@ To interface with quagga CLI:
     !
     ...
 
+
+## Advanced Usage
 Set up MAAS and create the required fabrics, spaces and subnets.
 
 Example spaces:
