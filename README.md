@@ -23,9 +23,12 @@ environment in no time.
                   rack0        rack1        rack2
 
 # Usage
-__NOTE__: The bgp interface is currently not in the directory and you must download it manually from
-          [here](https://github.com/fnordahl/interface-bgp). Instructions for building charm with local
-          artifacts can be found in the [Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer).
+__NOTE__:
+The bgp interface is currently not in the directory and you must download it
+manually from [here](https://github.com/fnordahl/interface-bgp).
+
+Instructions for building charm with local artifacts can be found in the
+[Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer). There is also an example below.
 
 
 ## Build
@@ -49,8 +52,8 @@ You will now find a deployable charm in ../builds/quagga
 
 
 ## Simple Usage
-To just get a BGP router to play and speak with you can deploy the charm to a LXD container on your
-laptop using the localhost provider.
+To just get a BGP router to play and speak with you can deploy the charm to a
+LXD container on your laptop using the localhost provider.
 
     juju deploy quagga
 
@@ -75,16 +78,19 @@ To interface with quagga CLI:
 Set up MAAS and create the required fabrics, spaces and subnets.
 
 Example spaces:
-  - space-0     192.168.122.0/24 (default, oob management, charm connectivity)
-  - tor0uplink0 172.16.100.0/30
-  - tor0uplink1 172.16.101.0/30
-  - tor1uplink0 172.16.110.0/30
-  - tor1uplink1 172.16.111.0/30
-  - tor2uplink0 172.16.120.0/30
-  - tor2uplink1 172.16.121.0/30
-  - rack0       172.16.200.0/24
-  - rack1       172.16.210.0/24
-  - rack2       172.16.220.0/24
+
+|     Space     |       CIDR       |                 Note                 |
+| ------------- | ---------------- | ------------------------------------ |
+| space-0       | 192.168.122.0/24 | (oob management, charm connectivity) |
+| tor0uplink0   | 172.16.100.0/30  |                                      |
+| tor0uplink1   | 172.16.101.0/30  |                                      |
+| tor1uplink0   | 172.16.110.0/30  |                                      |
+| tor1uplink1   | 172.16.111.0/30  |                                      |
+| tor2uplink0   | 172.16.120.0/30  |                                      |
+| tor2uplink1   | 172.16.121.0/30  |                                      |
+| rack0         | 172.16.200.0/24  |                                      |
+| rack1         | 172.16.210.0/24  |                                      |
+| rack2         | 172.16.220.0/24  |                                      |
 
 
 Add first Spine router and Top of Rack routers.
@@ -98,6 +104,7 @@ Add first Spine router and Top of Rack routers.
     juju add-relation spine0:bgpserver tor1:bgpclient
     juju add-relation spine0:bgpserver tor2:bgpclient
 
+
 ## Scale out Usage
 Add the second Spine router and relate it to the existing Top of Rack routers.
 
@@ -107,14 +114,18 @@ Add the second Spine router and relate it to the existing Top of Rack routers.
     juju add-relation spine1:bgpserver tor1:bgpclient
     juju add-relation spine1:bgpserver tor2:bgpclient
 
+
 ## Known Limitations and Issues
 At the current stage this charm is meant for simulation and testing purposes only.
+
 
 # Configuration
 No configuration is currently necessary, the charm infers required information from the environment it is deployed in.
 
+
 # Contact Information
 Author: Frode Nordahl <frode.nordahl@gmail.com>
+
 
 ## Upstream Project Name
 Quagga Software Routing Suite
