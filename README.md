@@ -124,7 +124,7 @@ No configuration is currently necessary, the charm infers required information f
 
 
 # Contact Information
-Author: Frode Nordahl <frode.nordahl@gmail.com>
+Author: OpenStack Charmers <openstack-dev@lists.openstack.org>
 
 
 ## Upstream Project Name
