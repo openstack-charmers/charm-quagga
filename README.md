@@ -25,7 +25,7 @@ environment in no time.
 # Usage
 __NOTE__:
 The bgp interface is currently not in the directory and you must download it
-manually from [here](https://github.com/fnordahl/interface-bgp).
+manually from [here](https://github.com/openstack-charmers/charm-interface-bgp).
 
 Instructions for building charm with local artifacts can be found in the
 [Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer). There is also an example below.
@@ -41,8 +41,8 @@ Example build instructions:
     export INTERFACE_PATH=$JUJU_REPOSITORY/interfaces
     mkdir -p $LAYER_PATH $INTERFACE_PATH
     
-    git clone https://github.com/fnordahl/interface-bgp $INTERFACE_PATH/bgp
-    git clone https://github.com/fnordahl/charm-quagga quagga
+    git clone https://github.com/openstack-charmers/charm-interface-bgp.git $INTERFACE_PATH/bgp
+    git clone https://github.com/openstack-charmers/charm-quagga.git quagga
     
     cd quagga
     sudo snap install charm
