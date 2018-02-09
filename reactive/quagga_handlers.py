@@ -30,14 +30,10 @@ def start_quagga():
                               owner='quagga', group='quagga', perms=0o640)
     ch_core.host.service('restart', 'quagga')
 
-    # Get bgp interface to generate our AS Number
-    bgpserver = reactive.relations.endpoint_from_name('bgpserver')
-
     # Perform basic BGP configuration
-    asn = bgpserver.generate_asn()
     quagga.vtysh(
         ['conf t',
-         'router bgp {}'.format(asn),
+         'router bgp {}'.format(quagga.get_asn()),
          'bgp router-id {}'.format(
              ch_core.hookenv.unit_get('private-address')
              ),
@@ -48,7 +44,8 @@ def start_quagga():
          ]
         )
 
-    ch_core.hookenv.status_set('active', 'Ready (AS Number {})'.format(asn))
+    ch_core.hookenv.status_set('active', 'Ready (AS Number {})'
+                               .format(quagga.get_asn()))
     reactive.set_state('quagga.started')
 
 
@@ -58,19 +55,27 @@ def publish_bgp_info():
             reactive.relations.endpoint_from_flag('endpoint.bgpserver.joined'),
             reactive.relations.endpoint_from_flag('endpoint.bgpclient.joined'),
             ):
-        endpoint.publish_info()
+        endpoint.publish_info(asn=quagga.get_asn())
 
 
 @reactive.when_any('endpoint.bgpserver.changed', 'endpoint.bgpclient.changed')
 def configure_quagga():
+    CONF_ROUTER_BGP = ['conf t', 'router bgp {}'.format(quagga.get_asn())]
+    EXIT_ROUTER_BGP_WRITE = ['exit', 'exit', 'write']
+
     for endpoint in (
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpserver.changed'),
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpclient.changed'),
             ):
+        vtysh_cmd = CONF_ROUTER_BGP
         for entry in endpoint.get_received_info():
             ch_core.hookenv.log("DEBUG: received info: '{}'".format(entry))
+            passive = ch_core.hookenv.relation_get(
+                        attribute='passive',
+                        unit=entry['remote_unit_name'],
+                        rid=entry['relation_id'])
             if len(entry['links']):
                 # configure BGP neighbours on extra-bindings interfaces
                 for link in entry['links']:
@@ -78,32 +83,28 @@ def configure_quagga():
                             'DEBUG: configure neighbour {} '
                             'remote-as {}'
                             ''.format(link['remote'], entry['asn']))
-                    quagga.vtysh(
-                        ['conf t',
-                         'router bgp {}'.format(endpoint.generate_asn()),
-                         'neighbor {} remote-as {}'.format(
-                             link['remote'], entry['asn']),
-                         'exit',
-                         'exit',
-                         'write',
-                         ]
-                        )
+                    vtysh_cmd += ['neighbor {} remote-as {}'
+                                  .format(link['remote'], entry['asn'])]
+                    if passive:
+                        vtysh_cmd += ['neighbor {} passive'
+                                      .format(link['remote'])]
             else:
                 # configure BGP neighbour on relation interface
                 relation_addr = ch_core.hookenv.relation_get(
                         attribute='private-address',
                         unit=entry['remote_unit_name'],
                         rid=entry['relation_id'])
+
                 ch_core.hookenv.log('DEBUG: configure neighbour {} '
                                     'remote-as {}'
                                     ''.format(relation_addr, entry['asn']))
-                quagga.vtysh(
-                    ['conf t',
-                     'router bgp {}'.format(endpoint.generate_asn()),
-                     'neighbor {} remote-as {}'.format(
-                         relation_addr, entry['asn']),
-                     'exit',
-                     'exit',
-                     'write',
-                     ]
-                    )
+
+                vtysh_cmd += ['neighbor {} remote-as {}'
+                              .format(relation_addr, entry['asn'])]
+                if passive:
+                    vtysh_cmd += ['neighbor {} passive'.format(relation_addr)]
+
+        # Exit and write
+        vtysh_cmd += EXIT_ROUTER_BGP_WRITE
+        # Execute the command
+        quagga.vtysh(vtysh_cmd)
