@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import subprocess
+import charmhelpers.core.hookenv as hookenv
+import charms.reactive as reactive
+
+
+def get_asn():
+    # Get bgp interface to generate our AS Number
+    bgpserver = reactive.relations.endpoint_from_name('bgpserver')
+    return hookenv.config('asn') or bgpserver.generate_asn()
 
 
 def vtysh(args):

@@ -1,1 +1,7 @@
-options: {}
+options:
+  asn:
+    default:
+    type: int
+    description: |
+      BGP Autonomous System Number for networks being advertised. If this is
+      not set the charm will automatically generate one.
