@@ -120,7 +120,10 @@ At the current stage this charm is meant for simulation and testing purposes onl
 
 
 # Configuration
-No configuration is currently necessary, the charm infers required information from the environment it is deployed in.
+The charm infers required information from the environment it is deployed in
+and from relations with other charms.
+
+For available configuration options and usage take a look at [config.yaml](config.yaml).
 
 
 # Contact Information
