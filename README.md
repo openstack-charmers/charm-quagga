@@ -129,6 +129,8 @@ For available configuration options and usage take a look at [config.yaml](confi
 # Contact Information
 Author: OpenStack Charmers <openstack-dev@lists.openstack.org>
 
+Icon made from "Zebra" (C) Nevit Dilmen licensed as Creative Commons BY-SA 3.0
+
 
 ## Upstream Project Name
 Quagga Software Routing Suite
