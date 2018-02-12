@@ -16,6 +16,7 @@ import charmhelpers.core.sysctl as ch_core_sysctl
 import charmhelpers.core.templating as ch_core_templating
 import charms.reactive as reactive
 import charm.quagga as quagga
+import copy
 
 
 @reactive.when_not('quagga.started')
@@ -69,7 +70,7 @@ def configure_quagga():
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpclient.changed'),
             ):
-        vtysh_cmd = CONF_ROUTER_BGP
+        vtysh_cmd = copy.deepcopy(CONF_ROUTER_BGP)
         for entry in endpoint.get_received_info():
             ch_core.hookenv.log("DEBUG: received info: '{}'".format(entry))
             passive = ch_core.hookenv.relation_get(
