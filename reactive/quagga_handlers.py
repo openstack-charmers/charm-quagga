@@ -75,10 +75,6 @@ def configure_quagga():
         vtysh_cmd = copy.deepcopy(CONF_ROUTER_BGP)
         for entry in endpoint.get_received_info():
             ch_core.hookenv.log("DEBUG: received info: '{}'".format(entry))
-            passive = ch_core.hookenv.relation_get(
-                        attribute='passive',
-                        unit=entry['remote_unit_name'],
-                        rid=entry['relation_id'])
             if len(entry['links']):
                 # configure BGP neighbours on extra-bindings interfaces
                 for link in entry['links']:
@@ -88,7 +84,7 @@ def configure_quagga():
                             ''.format(link['remote'], entry['asn']))
                     vtysh_cmd += ['neighbor {} remote-as {}'
                                   .format(link['remote'], entry['asn'])]
-                    if passive:
+                    if entry['passive']:
                         vtysh_cmd += ['neighbor {} passive'
                                       .format(link['remote'])]
             else:
@@ -104,7 +100,7 @@ def configure_quagga():
 
                 vtysh_cmd += ['neighbor {} remote-as {}'
                               .format(relation_addr, entry['asn'])]
-                if passive:
+                if entry['passive']:
                     vtysh_cmd += ['neighbor {} passive'.format(relation_addr)]
 
         # Exit and write
