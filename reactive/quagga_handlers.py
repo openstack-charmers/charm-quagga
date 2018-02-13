@@ -56,7 +56,9 @@ def publish_bgp_info():
             reactive.relations.endpoint_from_flag('endpoint.bgpserver.joined'),
             reactive.relations.endpoint_from_flag('endpoint.bgpclient.joined'),
             ):
-        endpoint.publish_info(asn=quagga.get_asn())
+        endpoint.publish_info(
+                asn=quagga.get_asn(),
+                bindings=ch_core.hookenv.metadata()['extra-bindings'])
 
 
 @reactive.when_any('endpoint.bgpserver.changed', 'endpoint.bgpclient.changed')
