@@ -14,6 +14,7 @@
 import charmhelpers.core as ch_core
 import charmhelpers.core.sysctl as ch_core_sysctl
 import charmhelpers.core.templating as ch_core_templating
+import charmhelpers.contrib.network.ip as ch_net_ip
 import charms.reactive as reactive
 import charm.quagga as quagga
 import copy
@@ -98,7 +99,16 @@ def configure_link(bgp_info, remote_addr):
     if bgp_info['passive']:
         vtysh_cmd += ['neighbor {} passive'
                       ''.format(remote_addr)]
-
+    if ch_net_ip.is_ipv6(remote_addr):
+        vtysh_cmd += ['no neighbor {} activate'.format(remote_addr),
+                      'address-family ipv6',
+                      # workaround for quagga redistribute connected
+                      # not working as expected for IPv6
+                      'network {}'.format(
+                          ch_net_ip.resolve_network_cidr(remote_addr)),
+                      'neighbor {} activate'.format(remote_addr),
+                      'exit',
+                      ]
     # Exit and write
     vtysh_cmd += EXIT_ROUTER_BGP_WRITE
     # Execute the command
