@@ -62,48 +62,44 @@ def publish_bgp_info():
 
 
 @reactive.when_any('endpoint.bgpserver.changed', 'endpoint.bgpclient.changed')
-def configure_quagga():
-    CONF_ROUTER_BGP = ['conf t', 'router bgp {}'.format(quagga.get_asn())]
-    EXIT_ROUTER_BGP_WRITE = ['exit', 'exit', 'write']
-
+def bgp_relation_changed():
     for endpoint in (
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpserver.changed'),
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpclient.changed'),
             ):
-        vtysh_cmd = copy.deepcopy(CONF_ROUTER_BGP)
         for entry in endpoint.get_received_info():
             ch_core.hookenv.log("DEBUG: received info: '{}'".format(entry))
             if len(entry['links']):
                 # configure BGP neighbours on extra-bindings interfaces
                 for link in entry['links']:
-                    ch_core.hookenv.log(
-                            'DEBUG: configure neighbour {} '
-                            'remote-as {}'
-                            ''.format(link['remote'], entry['asn']))
-                    vtysh_cmd += ['neighbor {} remote-as {}'
-                                  .format(link['remote'], entry['asn'])]
-                    if entry['passive']:
-                        vtysh_cmd += ['neighbor {} passive'
-                                      .format(link['remote'])]
+                    configure_link(entry, link['remote'])
             else:
                 # configure BGP neighbour on relation interface
                 relation_addr = ch_core.hookenv.relation_get(
                         attribute='private-address',
                         unit=entry['remote_unit_name'],
                         rid=entry['relation_id'])
+                configure_link(entry, relation_addr)
 
-                ch_core.hookenv.log('DEBUG: configure neighbour {} '
-                                    'remote-as {}'
-                                    ''.format(relation_addr, entry['asn']))
 
-                vtysh_cmd += ['neighbor {} remote-as {}'
-                              .format(relation_addr, entry['asn'])]
-                if entry['passive']:
-                    vtysh_cmd += ['neighbor {} passive'.format(relation_addr)]
+def configure_link(bgp_info, remote_addr):
+    CONF_ROUTER_BGP = ['conf t', 'router bgp {}'.format(quagga.get_asn())]
+    EXIT_ROUTER_BGP_WRITE = ['exit', 'exit', 'write']
 
-        # Exit and write
-        vtysh_cmd += EXIT_ROUTER_BGP_WRITE
-        # Execute the command
-        quagga.vtysh(vtysh_cmd)
+    vtysh_cmd = copy.deepcopy(CONF_ROUTER_BGP)
+    ch_core.hookenv.log(
+            'DEBUG: configure neighbour {} '
+            'remote-as {}'
+            ''.format(remote_addr, bgp_info['asn']))
+    vtysh_cmd += ['neighbor {} remote-as {}'
+                  ''.format(remote_addr, bgp_info['asn'])]
+    if bgp_info['passive']:
+        vtysh_cmd += ['neighbor {} passive'
+                      ''.format(remote_addr)]
+
+    # Exit and write
+    vtysh_cmd += EXIT_ROUTER_BGP_WRITE
+    # Execute the command
+    quagga.vtysh(vtysh_cmd)
