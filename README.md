@@ -55,23 +55,53 @@ You will now find a deployable charm in ../builds/quagga
 To just get a BGP router to play and speak with you can deploy the charm to a
 LXD container on your laptop using the localhost provider.
 
-    juju deploy quagga
+    $ juju deploy quagga
 
 To interface with quagga CLI:
 
-    juju ssh quagga/0 sudo -s
-    VTYSH_PAGER=cat vtysh
+    $ juju ssh quagga/0 sudo -s
+    $ VTYSH_PAGER=cat vtysh
     
     Hello, this is Quagga (version 0.99.24.1).
     Copyright 1996-2005 Kunihiro Ishiguro, et al.
     
-    juju-c7f4d7-0# show run
-    Building configuration...
+    juju-c7f4d7-0# show bgp ipv4 unicast
+    BGP table version is 0, local router ID is 172.16.122.254
+    Status codes: s suppressed, d damped, h history, * valid, > best, = multipath,
+                  i internal, r RIB-failure, S Stale, R Removed
+    Origin codes: i - IGP, e - EGP, ? - incomplete
     
-    Current configuration:
-    !
-    !
-    ...
+       Network          Next Hop            Metric LocPrf Weight Path
+    *> 172.16.100.0/30  172.16.120.1             0             0 4279270138 ?
+    *> 172.16.101.0/30  172.16.120.1                           0 4279270138 4279270139 ?
+    *> 172.16.110.0/30  172.16.120.1             0             0 4279270138 ?
+    *> 172.16.111.0/30  172.16.120.1                           0 4279270138 4279270140 ?
+    *  172.16.120.0/30  172.16.120.1             0             0 4279270138 ?
+    *>                  0.0.0.0                  0         32768 ?
+    *> 172.16.121.0/30  0.0.0.0                  0         32768 ?
+    *  172.16.122.0/24  172.16.120.1             0             0 4279270138 ?
+    *>                  0.0.0.0                  0         32768 ?
+    
+    Total number of prefixes 7
+    juju-c7f4d7-0# show bgp ipv6 unicast
+    BGP table version is 0, local router ID is 172.16.122.254
+    Status codes: s suppressed, d damped, h history, * valid, > best, = multipath,
+                  i internal, r RIB-failure, S Stale, R Removed
+    Origin codes: i - IGP, e - EGP, ? - incomplete
+    
+       Network          Next Hop            Metric LocPrf Weight Path
+    *> 2001:db8:100::/64
+                        2001:db8:120::1:0:0
+                                                 0             0 4279270138 i
+    *> 2001:db8:110::/64
+                        2001:db8:120::1:0:0
+                                                 0             0 4279270138 i
+    *  2001:db8:120::/64
+                        2001:db8:120::1:0:0
+                                                 0             0 4279270138 i
+    *>                  ::                       0         32768 i
+    
+    Total number of prefixes 3
 
 
 ## Advanced Usage
@@ -99,7 +129,7 @@ Example spaces:
 | rack1         | `172.16.210.0/24`   |                                      |
 |               | `2001:db8:210::/56` |                                      |
 | rack2         | `172.16.220.0/24`   |                                      |
-|               | `2001:db8:210::/56` |                                      |
+|               | `2001:db8:220::/56` |                                      |
 
 
 Add first Spine router and Top of Rack routers.
