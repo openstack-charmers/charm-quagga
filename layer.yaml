@@ -1,6 +1,7 @@
 includes:
  - 'layer:basic'
  - 'interface:bgp'
+repo: 'https://github.com/openstack-charmers/charm-quagga.git'
 options:
   basic:
     packages: ['quagga']
