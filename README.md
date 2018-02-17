@@ -23,10 +23,6 @@ environment in no time.
                   rack0        rack1        rack2
 
 # Usage
-__NOTE__:
-The bgp interface is currently not in the directory and you must download it
-manually from [here](https://github.com/openstack-charmers/charm-interface-bgp).
-
 Instructions for building charm with local artifacts can be found in the
 [Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer). There is also an example below.
 
@@ -35,20 +31,13 @@ Instructions for building charm with local artifacts can be found in the
 This is a layered charm and it must be built before it can be deployed.
 
 Example build instructions:
-
-    export JUJU_REPOSITORY=`pwd`
-    export LAYER_PATH=$JUJU_REPOSITORY/layers
-    export INTERFACE_PATH=$JUJU_REPOSITORY/interfaces
-    mkdir -p $LAYER_PATH $INTERFACE_PATH
-    
-    git clone https://github.com/openstack-charmers/charm-interface-bgp.git $INTERFACE_PATH/bgp
     git clone https://github.com/openstack-charmers/charm-quagga.git quagga
     
     cd quagga
     sudo snap install charm
     charm build
 
-You will now find a deployable charm in ../builds/quagga
+You will now find a deployable charm in ./builds/quagga
 
 
 ## Simple Usage
