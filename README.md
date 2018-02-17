@@ -23,24 +23,6 @@ environment in no time.
                   rack0        rack1        rack2
 
 # Usage
-Instructions for building charm with local artifacts can be found in the
-[Juju documentation](https://jujucharms.com/docs/devel/developer-layers-interfaces#creating-an-interface-layer). There is also an example below.
-
-
-## Build
-This is a layered charm and it must be built before it can be deployed.
-
-Example build instructions:
-    git clone https://github.com/openstack-charmers/charm-quagga.git quagga
-    
-    cd quagga
-    sudo snap install charm
-    charm build
-
-You will now find a deployable charm in ./builds/quagga
-
-
-## Simple Usage
 To just get a BGP router to play and speak with you can deploy the charm to a
 LXD container on your laptop using the localhost provider.
 
