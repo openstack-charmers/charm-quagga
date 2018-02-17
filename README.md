@@ -26,7 +26,7 @@ environment in no time.
 To just get a BGP router to play and speak with you can deploy the charm to a
 LXD container on your laptop using the localhost provider.
 
-    $ juju deploy quagga
+    $ juju deploy --channel edge cs:~fnordahl/quagga
 
 To interface with quagga CLI:
 
@@ -105,10 +105,10 @@ Example spaces:
 
 Add first Spine router and Top of Rack routers.
 
-    juju deploy --bind "ptp0=tor0uplink0 ptp1=tor1uplink0 ptp2=tor2uplink0 space-0" quagga spine0
-    juju deploy --bind "ptp0=tor0uplink0 ptp1=tor0uplink1 lan0=rack0 space-0" quagga tor0
-    juju deploy --bind "ptp0=tor1uplink0 ptp1=tor1uplink1 lan0=rack1 space-0" quagga tor1
-    juju deploy --bind "ptp0=tor2uplink0 ptp1=tor2uplink1 lan0=rack2 space-0" quagga tor2
+    juju deploy --bind "ptp0=tor0uplink0 ptp1=tor1uplink0 ptp2=tor2uplink0 space-0" --channel edge cs:~fnordahl/quagga spine0
+    juju deploy --bind "ptp0=tor0uplink0 ptp1=tor0uplink1 lan0=rack0 space-0" --channel edge cs:~fnordahl/quagga tor0
+    juju deploy --bind "ptp0=tor1uplink0 ptp1=tor1uplink1 lan0=rack1 space-0" --channel edge cs:~fnordahl/quagga tor1
+    juju deploy --bind "ptp0=tor2uplink0 ptp1=tor2uplink1 lan0=rack2 space-0" --channel edge cs:~fnordahl/quagga tor2
 
     juju add-relation spine0:bgpserver tor0:bgpclient
     juju add-relation spine0:bgpserver tor1:bgpclient
@@ -118,7 +118,7 @@ Add first Spine router and Top of Rack routers.
 ## Scale out Usage
 Add the second Spine router and relate it to the existing Top of Rack routers.
 
-    juju deploy --bind "ptp0=tor0uplink1 ptp1=tor1uplink1 ptp2=tor2uplink1 space-0" quagga spine1
+    juju deploy --bind "ptp0=tor0uplink1 ptp1=tor1uplink1 ptp2=tor2uplink1 space-0" --channel edge cs:~fnordahl/quagga spine1
 
     juju add-relation spine1:bgpserver tor0:bgpclient
     juju add-relation spine1:bgpserver tor1:bgpclient
