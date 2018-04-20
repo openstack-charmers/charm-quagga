@@ -12,8 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import subprocess
-import charmhelpers.core.hookenv as hookenv
+from charmhelpers.core import (
+    hookenv,
+    host,
+)
 import charms.reactive as reactive
+
+# Quagga services based on Ubuntu Release
+QUAGGA_SERVICES = {
+    'xenial': ['quagga'],
+    'bionic': ['zebra', 'bgpd'],
+}
 
 
 def get_asn():
@@ -29,3 +38,12 @@ def vtysh(args):
         cmds.append(arg)
     output = subprocess.check_output(cmds)
     return output
+
+
+def restart_services():
+    """Determine which service names are required to be restarted based on
+    Ubuntu release and restart them.
+    """
+    ubuntu_release = host.lsb_release()['DISTRIB_CODENAME']
+    for service in QUAGGA_SERVICES[ubuntu_release]:
+        host.service('restart', service)
