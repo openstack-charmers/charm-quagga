@@ -30,7 +30,7 @@ def start_quagga():
                               owner='quagga', group='quagga', perms=0o640)
     ch_core_templating.render('bgpd.conf', '/etc/quagga/bgpd.conf', {},
                               owner='quagga', group='quagga', perms=0o640)
-    ch_core.host.service('restart', 'quagga')
+    quagga.restart_services()
 
     # Perform basic BGP configuration
     quagga.vtysh(
