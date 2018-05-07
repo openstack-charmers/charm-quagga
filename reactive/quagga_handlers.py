@@ -57,6 +57,8 @@ def publish_bgp_info():
             reactive.relations.endpoint_from_flag('endpoint.bgpserver.joined'),
             reactive.relations.endpoint_from_flag('endpoint.bgpclient.joined'),
             ):
+        if endpoint is None:
+            continue
         endpoint.publish_info(
                 asn=quagga.get_asn(),
                 bindings=ch_core.hookenv.metadata()['extra-bindings'])
@@ -70,6 +72,8 @@ def bgp_relation_changed():
             reactive.relations.endpoint_from_flag(
                 'endpoint.bgpclient.changed'),
             ):
+        if endpoint is None:
+            continue
         for entry in endpoint.get_received_info():
             ch_core.hookenv.log("DEBUG: received info: '{}'".format(entry))
             if len(entry['links']):
