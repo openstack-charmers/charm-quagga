@@ -5,3 +5,12 @@ options:
     description: |
       BGP Autonomous System Number for networks being advertised. If this is
       not set the charm will automatically generate one.
+  use-16bit-asn:
+    default: False
+    type: boolean
+    description: |
+      Generate 16-bit Autonomous System number for this application. Default is
+      to generate a 32-bit ASn.
+      .
+      NOTE: The 16-bit ASn space is limited and this charm will give you
+            unique ASns for a /23 within your deployment.
