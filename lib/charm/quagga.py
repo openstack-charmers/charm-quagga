@@ -28,7 +28,12 @@ QUAGGA_SERVICES = {
 def get_asn():
     # Get bgp interface to generate our AS Number
     bgpserver = reactive.relations.endpoint_from_name('bgpserver')
-    return hookenv.config('asn') or bgpserver.generate_asn()
+    if hookenv.config('use-16bit-asn'):
+        asn = bgpserver.generate_asn_16()
+    else:
+        asn = bgpserver.generate_asn()
+
+    return hookenv.config('asn') or asn
 
 
 def vtysh(args):
