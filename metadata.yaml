@@ -7,8 +7,8 @@ description: |
 tags:
   - network
 series:
+  - focal
   - eoan
-  - disco
   - bionic
   - xenial
 provides:

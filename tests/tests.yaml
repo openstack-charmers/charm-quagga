@@ -1,0 +1,14 @@
+charm_name: quagga
+gate_bundles:
+- base-deploy-xenial
+- base-deploy-bionic
+- base-deploy-eoan
+- base-deploy-focal
+smoke_bundles:
+- base-deploy-bionic
+dev_bundles:
+- spine-leaf
+configure:
+- zaza.charm_tests.noop.setup.basic_setup
+tests:
+- zaza.openstack.charm_tests.quagga.tests.QuaggaTest

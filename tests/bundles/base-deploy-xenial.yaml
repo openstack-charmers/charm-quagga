@@ -1,0 +1,12 @@
+relations:
+- - peer0:bgpserver
+  - peer1:bgpclient
+applications:
+  peer0:
+    series: xenial
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+  peer1:
+    series: xenial
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1

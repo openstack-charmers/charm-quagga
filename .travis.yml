@@ -1,8 +1,41 @@
-dist: xenial
+sudo: true
+dist: bionic
 language: python
-python: - "3.6"
 install:
  - pip install tox-travis
+matrix:
+  include:
+    - name: "Python 3.5"
+      python: 3.5
+      env: ENV=pep8,py3
+    - name: "Python 3.6"
+      python: 3.6
+      env: ENV=pep8,py3
+    - name: "Python 3.7"
+      python: 3.7
+      env: ENV=pep8,py3
+    - name: "Python 3.8"
+      python: 3.8
+      env: ENV=pep8,py3
+    - env: ENV="func-target base-deploy-xenial"
+    - env: ENV="func-target base-deploy-bionic"
+    - env: ENV="func-target base-deploy-eoan"
 script:
- - tox -c tox.ini -e pep8
- - tox -c tox.ini -e py3
+ - if [ $(echo "${ENV/ //}" | grep func) ]; then
+     sudo apt update;
+     sudo apt install -y distro-info;
+     sudo apt remove -y --purge lxd lxd-client;
+     sudo snap install lxd;
+     sudo snap install juju --classic;
+     sudo sh -c 'echo PATH=/snap/bin:$PATH >> /etc/environment';
+     sudo lxd waitready;
+     sudo lxd init --auto;
+     sudo chmod 666 /var/snap/lxd/common/lxd/unix.socket;
+     juju bootstrap --no-gui localhost;
+   fi;
+   tox -c tox.ini -e $ENV;
+ - if [ $(echo "${ENV/ //}" | grep func) ]; then
+     export MODEL=$(juju models --format yaml|grep "^- name:.*zaza"|cut -f2 -d/);
+     juju debug-log -m $MODEL --replay --no-tail --level DEBUG --include quagga --include peer0 --include peer1;
+     juju status -m $MODEL;
+   fi

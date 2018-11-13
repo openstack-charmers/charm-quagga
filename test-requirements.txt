@@ -1,5 +1,10 @@
+pip<19.0
+charm-tools
+# NOTE(fnordahl) a lot of this should be mocked out instead!
 charms.reactive
 flake8
 mock
 nose
 git+https://github.com/openstack/charms.openstack#egg=charms.openstack
+git+https://github.com/openstack-charmers/zaza.git#egg=zaza
+git+https://github.com/openstack-charmers/zaza-openstack-tests.git#egg=zaza.openstack

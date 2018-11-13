@@ -1,0 +1,51 @@
+relations:
+- - spine0:bgpserver
+  - tor0:bgpclient
+- - spine0:bgpserver
+  - tor1:bgpclient
+- - spine0:bgpserver
+  - tor2:bgpclient
+- - spine1:bgpserver
+  - tor0:bgpclient
+- - spine1:bgpserver
+  - tor1:bgpclient
+- - spine1:bgpserver
+  - tor2:bgpclient
+applications:
+  spine0:
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+    bindings:
+      ptp0: tor0uplink0
+      ptp1: tor1uplink0
+      ptp2: tor2uplink0
+      '': space-0
+  spine1:
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+    bindings:
+      ptp0: tor0uplink1
+      ptp1: tor1uplink1
+      ptp2: tor2uplink1
+      '': space-0
+  tor0:
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+    bindings:
+      ptp0: tor0uplink0
+      ptp1: tor0uplink1
+      '': space-0
+  tor1:
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+    bindings:
+      ptp0: tor1uplink0
+      ptp1: tor1uplink1
+      '': space-0
+  tor2:
+    charm: cs:~openstack-charmers-next/quagga
+    num_units: 1
+    bindings:
+      ptp0: tor2uplink0
+      ptp1: tor2uplink1
+      '': space-0
