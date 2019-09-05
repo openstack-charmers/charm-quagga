@@ -22,6 +22,8 @@ import charms.reactive as reactive
 QUAGGA_SERVICES = {
     'xenial': ['quagga'],
     'bionic': ['zebra', 'bgpd'],
+    'disco': ['zebra', 'bgpd'],
+    'eoan': ['zebra', 'bgpd'],
 }
 
 
