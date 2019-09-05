@@ -22,6 +22,10 @@ environment in no time.
                     |            |            |
                   rack0        rack1        rack2
 
+This charm's current intent is as a test-fixture only, and it is not targeted
+for production use cases.  However, it could conceivably mature beyond a
+QA/Test case.
+
 # Usage
 To just get a BGP router to play and speak with you can deploy the charm to a
 LXD container on your laptop using the localhost provider.
